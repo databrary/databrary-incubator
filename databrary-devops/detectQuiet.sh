@@ -10,7 +10,7 @@ conf_dir="/home/databrary"
 cd $conf_dir
 while true
 do
-   res=`echo "select count(*) from upload" | $src_path/runsql - | head -3 | grep '\s*$2\s*'`
+   res=`echo "select count(*) from upload" | $src_path/runsql - | head -3 | grep "\s*$2\s*"`
    if [ $? == 0 ]
    then
      echo "No uploads, alerting."
