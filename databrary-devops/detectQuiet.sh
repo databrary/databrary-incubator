@@ -1,7 +1,6 @@
 #!/bin/bash                                                                     
-# expects two arguments:
+# expects one arguments:
 #   1. the email address to alert
-#   2. the number of stale entries in uploads to consider as inactive
 # ensure running as databrary (or demo, respectively) to connect to proper db
 # set these appropriately:
 src_path="/home/build/databrary"
@@ -10,7 +9,10 @@ conf_dir="/home/databrary"
 cd $conf_dir
 while true
 do
-   res=`echo "select count(*) from upload" | $src_path/runsql - | head -3 | grep "\s*$2\s*"`
+   # upload tokens expire a week after creation, so one that expire in more than 6 days from now are probably active
+   # third line is the actual count
+   # store result in res to avoid printing output
+   res=`echo "select count(*) from upload where expires > CURRENT_TIMESTAMP + interval '6 days'" | $src_path/runsql - | head -3 | grep '\s*0\s*'`
    if [ $? == 0 ]
    then
      echo "No uploads, alerting."
