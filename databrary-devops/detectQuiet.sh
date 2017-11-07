@@ -3,8 +3,7 @@
 
 while true
 do
-   res=`echo "select count(*) from upload" | ./runsql - | head -3 | grep '\s*0\\
-s*'`
+   res=`echo "select count(*) from upload" | ./runsql - | head -3 | grep '\s*0\s*'`
    if [ $? == 0 ]
    then
      echo "No uploads, alerting."
