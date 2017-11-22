@@ -8,4 +8,4 @@ cd ~/src
 git clone --branch $BRANCH --depth 1 https://github.com/databrary/databrary databrary-$BRANCH
 cd ~/src/databrary-$BRANCH
 # trigger config file creation
-./build-deploy-copy-prep $TGT1
+./build-package-copy-prep $TGT1
