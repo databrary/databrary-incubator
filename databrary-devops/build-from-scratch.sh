@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 BRANCH="master"
-BASEDIR=~/dev
+BASEDIR=/tmp
 rm -rf $BASEDIR/databrary-$BRANCH
 mkdir -p $BASEDIR 
 cd $BASEDIR
