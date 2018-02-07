@@ -3,4 +3,4 @@ set -eu
 
 echo "Creating /etc/nix/nix.conf for binary cache configuration. sudo required."
 mkdir -p /etc/nix
-echo "binary-caches = http://obsidian.webhop.org:8950/ https://cache.nixos.org/" | tee -a /etc/nix/nix.conf 
+echo "binary-caches = https://cache.nixos.org/ https://nixcache.reflex-frp.org/" | tee -a /etc/nix/nix.conf 
