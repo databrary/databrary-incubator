@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -e
+# should take branch as optional argument, default to master
 BRANCH="master"
 BASEDIR=/tmp
 rm -rf $BASEDIR/databrary-$BRANCH
