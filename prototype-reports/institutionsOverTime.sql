@@ -8,4 +8,4 @@ FROM
                             WHERE parent = 0 AND child > 4 AND site = 'ADMIN'
                         )
                 AND audit_action = 'add') a 
-       ) b
+       GROUP BY monthp) b
