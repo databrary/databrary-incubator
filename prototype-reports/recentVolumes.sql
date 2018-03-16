@@ -1,3 +1,5 @@
+-- wanted: public vs partial vs private 
+
 select id, left(name, 50), alias, doi, audit_time, audit_user, 
        (select count(*)
        from volume_access va
