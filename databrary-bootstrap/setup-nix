@@ -5,4 +5,4 @@ curl https://nixos.org/nix/install | sh
 
 echo "Creating /etc/nix/nix.conf for binary cache configuration. sudo required."
 sudo mkdir -p /etc/nix
-echo "binary-caches = https://cache.nixos.org/ https://nixcache.reflex-frp.org/ http://devdatabrary2.home.nyu.edu:5000/" | sudo tee -a /etc/nix/nix.conf 
+echo "binary-caches = https://cache.nixos.org/ https://nixcache.reflex-frp.org/" | sudo tee -a /etc/nix/nix.conf 
