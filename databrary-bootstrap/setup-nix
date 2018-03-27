@@ -3,7 +3,7 @@ set -eu
 
 # curl https://nixos.org/nix/install | sh
 curl -o install-nix-1.11.16 https://rawgit.com/NixOS/nixos-homepage/master/nix/install-1.11.16
-chmod +x install-1.11.16
+chmod +x install-nix-1.11.16
 sh ./install-nix-1.11.16
 
 echo "Creating /etc/nix/nix.conf for binary cache configuration. sudo required."
