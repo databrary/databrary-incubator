@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -eu
 
+# should perform two sudo tasks in earlier, separate script, then perform install below
+
 # curl https://nixos.org/nix/install | sh
 curl -o install-2.0 https://raw.githubusercontent.com/NixOS/nixos-homepage/master/nix/install-2.0
 chmod +x install-2.0
@@ -11,3 +13,4 @@ sudo mkdir -p /etc/nix
 # had some issues with reflex-frp derivations when attempting to install/build around 3/2018
 # echo "binary-caches = https://cache.nixos.org/ https://nixcache.reflex-frp.org/" | sudo tee -a /etc/nix/nix.conf 
 echo "binary-caches = https://cache.nixos.org/" | sudo tee -a /etc/nix/nix.conf 
+# install key for cache per reddit note
