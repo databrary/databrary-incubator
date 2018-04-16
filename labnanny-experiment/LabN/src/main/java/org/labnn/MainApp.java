@@ -1,16 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-//http://stage.databrary.org:443/api/volume/1
-
-
-
 package org.labnn;
 
-import org.entity.Volume;
+import org.databrary.entity.Volume;
+import org.databrary.controls.SessionDownload;
+import org.databrary.controls.VolumeView;
+
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -28,6 +21,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.*;
 import javafx.concurrent.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.*;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -38,12 +33,12 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.*;
+import javafx.scene.web.WebView;
 import javafx.util.Duration;
+import org.databrary.utils.UrlUtils;
 
+public class MainApp extends Application {
 
-public class Main extends Application {
-
-    
     private Pane splashLayout;
     private ProgressBar loadProgress;
     private Label progressText;
@@ -53,16 +48,16 @@ public class Main extends Application {
     Scene scene;
 
     //Tab pane
-     BorderPane borderPane = new BorderPane();
+    BorderPane borderPane = new BorderPane();
     final TabPane tabPane = new TabPane();
-    final Tab tab1 = new Tab("Volume Info");
+    final Tab tab1 = new Tab("Welcome");
 
-    final Tab tab2 = new Tab("Staff Management");
-    final Tab tab3 = new Tab("Scheduling module");
+    final Tab tab2 = new Tab("My volums");
+    final Tab tab3 = new Tab("Metadata Upload");
     final Tab tab4 = new Tab("Session/Visit Module");
-    final Tab tab5 = new Tab("Data Provenance/Sharing");
-    final Tab tab6 = new Tab("Publication/Presentation Management");
-    final Tab tab7 = new Tab("Reporting Module");
+    final Tab tab5 = new Tab("Volume View");
+    final Tab tab6 = new Tab("Uploads");
+    final Tab tab7 = new Tab("Downloads");
     final Tab tab8 = new Tab("");
 
     Text volumeLabelT = new Text("++++++++++++++++++++++++++++++++++++++++++++++++");
@@ -74,11 +69,10 @@ public class Main extends Application {
 
     @Override
     public void init() {
-       
-        
+
         ClassLoader classLoader = getClass().getClassLoader();
         String imageUrl = classLoader.getResource("images/databrary.PNG").toExternalForm();
-         ImageView splash = new ImageView(new Image(imageUrl));;
+        ImageView splash = new ImageView(new Image(imageUrl));;
 
         //splash.setFitWidth(SPLASH_WIDTH/2);
         //splash.setFitHeight(SPLASH_HEIGHT/2);
@@ -104,18 +98,15 @@ public class Main extends Application {
 
     @Override
     public void start(final Stage initStage) throws Exception {
-        
-         volumeLabelT.textProperty().bind(jsonPretty);
-        
-        
-       
-        
+
+        volumeLabelT.textProperty().bind(jsonPretty);
+
         final Task<ObservableList<String>> friendTask = new Task<ObservableList<String>>() {
             @Override
             protected ObservableList<String> call() throws InterruptedException {
                 ObservableList<String> foundVolumes
                         = FXCollections.<String>observableArrayList();
-                ObservableList<String> availableFriends
+                ObservableList<String> availableVolumes
                         = FXCollections.observableArrayList(
                                 "Volume 1", "Volume 2", "Volume 3", "Volume 4", "Volume 5",
                                 "Volume 6", "Volume 17", "Volume 8", "Volume 1",
@@ -123,10 +114,18 @@ public class Main extends Application {
                         );
 
                 updateMessage("Finding volumes . . .");
-                for (int i = 0; i < availableFriends.size(); i++) {
+                
+                
+                try {
+                    UrlUtils.writeDatabraryVolumesNames();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                
+                for (int i = 0; i < availableVolumes.size(); i++) {
                     Thread.sleep(150);
-                    updateProgress(i + 1, availableFriends.size());
-                    String nextFriend = availableFriends.get(i);
+                    updateProgress(i + 1, availableVolumes.size());
+                    String nextFriend = availableVolumes.get(i);
                     foundVolumes.add(nextFriend);
                     // updateMessage("Loading . . . found " + nextFriend);
                     updateMessage("Loading . . . ");
@@ -149,16 +148,10 @@ public class Main extends Application {
     private void showMainStage(
             ReadOnlyObjectProperty<ObservableList<String>> friends
     ) {
-       
-        
+
         mainStage = new Stage(StageStyle.DECORATED);
         mainStage.setTitle("Databrary desktop");
 
-        
-
-        borderPane.setCenter(new Label("Hello databrary"));
-
-        //peopleView.itemsProperty().bind(friends);
         VBox top = new VBox(2);
         top.getChildren().addAll(getMenuBar());
 
@@ -168,40 +161,51 @@ public class Main extends Application {
 
         final ListView<String> peopleView = new ListView<>();
         peopleView.itemsProperty().bind(friends);
-       
 
-        //Scene scene = new Scene(peopleView);
+       
         scene = new Scene(borderPane, SCENE_WIDTH, SCENE_HEIGHT);
         tabPane.prefWidthProperty().bind(scene.widthProperty().subtract(3.0));
-        
-        //tabPane.getStyleClass().add("vTabPane");
-      // Button  l =  new Button("Helllllo");
+
+      
+       // tab1.setContent(volumeLabelT);;;
+        WebView web = UrlUtils.getBrowser();
        
-         tab1.setContent(volumeLabelT);
+       
+        tab1.setContent(web);
         
+        
+      
+        try {
+            VolumeView vv = new VolumeView();
+            VBox volumeView = vv.createVolumeView();
+            tab5.setContent(volumeView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+       
+        tab7.setContent(new SessionDownload(mainStage));
+      
+
         ClassLoader classLoader = getClass().getClassLoader();
-        
         String css = classLoader.getResource("styles/styles.css").toExternalForm();
-        
         scene.getStylesheets().add(css);
         mainStage.setScene(scene);
         mainStage.show();
-        
-        scene.widthProperty().addListener((obs, oldScene, newScene) -> {
-    if (newScene == null) {
-        // not showing...
-    } else {
-        volumeLabelT.setWrappingWidth((double)newScene - 30);
-    }
-});
-        
-        // Platform.runLater(() -> jsonToJava());
 
+        scene.widthProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene == null) {
+                // not showing...
+            } else {
+                volumeLabelT.setWrappingWidth((double) newScene - 30);
+            }
+        });
+
+        // Platform.runLater(() -> jsonToJava());
         Platform.runLater(new Runnable() {
             public void run() {
                 jsonToJava();
-             //   tab4.setContent(new Label(volumeProperty.get()));
-           
+                //   tab4.setContent(new Label(volumeProperty.get()));
+
             }
         });
 
@@ -245,12 +249,27 @@ public class Main extends Application {
     }
 
     MenuBar getMenuBar() {
-        final Menu menu1 = new Menu("File");
-        final Menu menu2 = new Menu("Options");
-        final Menu menu3 = new Menu("Help");
+        final Menu menuFile = new Menu("File");
+
+        MenuItem databraryStats = new MenuItem("Load Utilities");
+
+        databraryStats.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                try {
+                    UrlUtils.writeDatabraryVolumesNames();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.out.println("menu dadabrary");
+            }
+        });
+        menuFile.getItems().add(databraryStats);
+
+        final Menu menuOption = new Menu("Options");
+        final Menu menuHelp = new Menu("Help");
 
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(menu1, menu2, menu3);
+        menuBar.getMenus().addAll(menuFile, menuOption, menuHelp);
         return menuBar;
 
     }
@@ -267,7 +286,6 @@ public class Main extends Application {
         // buttonCurrent.setPrefSize(100, 20);
         // Button buttonProjected = new Button("Projected");
         // buttonProjected.setPrefSize(100, 20);
-       
         hbox.getChildren().addAll(
                 //   buttonCurrent,
                 //buttonProjected,
@@ -293,7 +311,8 @@ public class Main extends Application {
         //  tab2.setText("To Databrary");
         //  tab3.setText("Tab 3");
         //  tab4.setText("Tab 4");
-        tabPane.getTabs().addAll(tab1, tab2, tab3, tab4, tab5, tab6, tab7);
+        //  tabPane.getTabs().addAll(tab1, tab2, tab3, tab4, tab5, tab6, tab7);
+        tabPane.getTabs().addAll(tab1, tab2, tab3, tab4, tab5, tab7);
 
         return tabPane;
         //  borderPane.setCenter(tabPane);
@@ -303,27 +322,27 @@ public class Main extends Application {
     public void jsonToJava() {
         System.out.println("staf1 --> ");
         ObjectMapper mapper = new ObjectMapper();
-       
+
         System.out.println("staf2 --> ");
 
         try {
-             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             // Convert JSON string from file to Object
             //Staf staff = mapper.readValue(new File("C:\\staf.json"), Volume.class);
-             Volume staff = mapper.readValue(new URL("http://stage.databrary.org:443/api/volume/1"), Volume.class);
+            Volume staff = mapper.readValue(new URL("http://stage.databrary.org:443/api/volume/1"), Volume.class);
             System.out.println("staf3 --> " + staff);
-/*
+            /*
             // Convert JSON string to Object
             String jsonInString = "{\"id\":\"1\"}";
             Volume staff4 = mapper.readValue(jsonInString, Volume.class);
             System.out.println("staf4--> " + staff4);
-*/
+             */
             //Pretty print
             jsonPretty.setValue(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(staff).toString());
             System.out.println(volumeLabelT.getText());
 
         } catch (Exception e) {
-               e.printStackTrace();
+            e.printStackTrace();
         }
     }
 }
