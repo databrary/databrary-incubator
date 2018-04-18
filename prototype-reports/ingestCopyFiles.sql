@@ -20,4 +20,4 @@ where sa.container = 25581;
 -- add mkdir at top of script
 -- bash scriptname.sh  - can take up to ten minutes to complete, watch top
 
--- generate manifest of copied files by using same query with only target ouptut (or ls in the output dir)
+-- generate manifest of copied files by using same query with only target ouptut (or ls -1 in the output dir)
