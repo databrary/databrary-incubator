@@ -1,4 +1,6 @@
-select id, left(name, 50), alias, doi, audit_time, audit_user as usr, 
+select id
+       , left(name, 50) , alias, doi
+       , to_char(audit_time, 'Mon DD YYYY HH12:MI AM') as audit_time, audit_user as usr, 
        (select case va.share_full when true then 'PUBLIC'
                                   when false then 'PARTIAL' end
        from volume_access va
