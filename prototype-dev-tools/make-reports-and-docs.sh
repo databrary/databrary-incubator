@@ -1,33 +1,51 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i bash
 # FIXME: Add rsync to the env somehow
-set -eu
+# Use
+# https://discourse.nixos.org/t/best-way-to-augment-a-nix-shell-for-dev-utilities/157/6
+# once we finally update nixpkgs again.
+set -eux
 
 #FIXME: This may work, but hasn't been actually tested yet. Fun times!
 
->&2 echo "Set up gh-pages first!"
-exit 1
-
 TODAY=$(date +%Y%m%d)
 
-cabal configure --enable-tests --enable-coverage --disable-shared --disable-optimization
-cabal build -j
-cabal test
-cabal haddock | grep ') in' \
-    | tee haddock_coverage_report-${TODAY}.txt
-hpc report dist/hpc/vanilla/tix/databrary-1/databrary-1.tix \
-    --hpcdir=./dist/hpc/vanilla/mix/databrary-1 \
-    --hpcdir=./dist/hpc/vanilla/mix/discovered \
-    --exclude=Paths_databrary \
-    | tee hpc-report-${TODAY}.txt
-wd=$(mktemp -d)
-git worktree add ${wd} gh-pages
-trap "rm -rf ${wd}; git worktree prune" EXIT
+build () {
+    ## Basic (?) cabal steps
+    rm -fr dist
+    cabal configure \
+        --enable-tests \
+        --enable-coverage \
+        --disable-shared \
+        --disable-optimization
+    cabal build -j
+    # This also calls hpc
+    cabal test
 
-rsync -ric --delete \
-    dist/hpc/vanilla/html/discovered/databrary-1-4IJypVjWiZDEnHoKzlHmLx/ \
-    ${wd}/coverage
-rsync -ric --delete --exclude=.git dist/doc/html/databrary/ ${wd}/haddocks/
+    ## Use cabal to call haddock
+    cabal haddock --hyperlink-source | grep ') in' \
+        | tee haddock-coverage-report-${TODAY}.txt
+}
 
-cd ${wd}
-git commit --all -m "Update ${TODAY}"
+report () {
+    ## Set up gh-pages for rsyncing
+    wd=$(mktemp -d)
+    git worktree add ${wd} gh-pages
+    trap "rm -rf ${wd}; git worktree prune" EXIT
+
+    ## Rsync the haddocks and the hpc report
+    rsync -ric --delete \
+        dist/hpc/vanilla/html/databrary-1/ \
+        ${wd}/coverage
+    rsync -ric --delete dist/doc/html/databrary/ ${wd}/haddocks/
+
+    ## Update and finish
+    ( # New subshell for nested traps
+        cd ${wd}
+        trap "cd -" EXIT
+        git commit --no-gpg-sign --all -m "Update ${TODAY}"
+    )
+}
+
+build
+report
