@@ -6,24 +6,24 @@
 # once we finally update nixpkgs again.
 set -eux
 
-#FIXME: This may work, but hasn't been actually tested yet. Fun times!
+TODAY=$(date +%Y-%m-%d)
 
-TODAY=$(date +%Y%m%d)
+DISTDIR=dist-reports
+CABAL="cabal --builddir=$PWD/$DISTDIR"
 
 build () {
     ## Basic (?) cabal steps
-    rm -fr dist
-    cabal configure \
+    $CABAL configure \
         --enable-tests \
         --enable-coverage \
         --disable-shared \
         --disable-optimization
-    cabal build -j
+    $CABAL build -j
     # This also calls hpc
-    cabal test
+    $CABAL test
 
     ## Use cabal to call haddock
-    cabal haddock --hyperlink-source | grep ') in' \
+    $CABAL haddock --hyperlink-source | grep ') in' \
         | tee haddock-coverage-report-${TODAY}.txt
 }
 
@@ -31,19 +31,20 @@ report () {
     ## Set up gh-pages for rsyncing
     wd=$(mktemp -d)
     git worktree add ${wd} gh-pages
-    trap "rm -rf ${wd}; git worktree prune" EXIT
+    trap "rm -rf ${wd}; git worktree prune" RETURN
+    trap "#### WORKTREE PRESERVED AT ${wd}" ERR
 
     ## Rsync the haddocks and the hpc report
     rsync -ric --delete \
-        dist/hpc/vanilla/html/databrary-1/ \
+        $DISTDIR/hpc/vanilla/html/databrary-1/ \
         ${wd}/coverage
-    rsync -ric --delete dist/doc/html/databrary/ ${wd}/haddocks/
+    rsync -ric --delete $DISTDIR/doc/html/databrary/ ${wd}/haddocks/
 
     ## Update and finish
     ( # New subshell for nested traps
         cd ${wd}
         trap "cd -" EXIT
-        git commit --no-gpg-sign --all -m "Update ${TODAY}"
+        git commit --no-gpg-sign --no-verify --all -m "Update ${TODAY}"
     )
 }
 
