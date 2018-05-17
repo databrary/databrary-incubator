@@ -17,9 +17,11 @@ from slot_asset sa
 where sa.container = <SLOT ID>;
 
 
--- copy into shell script
--- add mkdir at top of script
--- add set -x to echo command, as they take time to run
+-- Kanishka: log into two iTerm2 windows
+-- Joy: paste in "converted" portion above, copy generated lines
+-- Joy: in second iTerm2 window, open nano, paste lines with file name = slotID.sh (copy into shell script) 
+-- first line: set -x (to echo command, as they take time to run)
+-- next line: mkdir -p [path] at top of script ... DO NOT FORGET /NYU/STAGE!!!!!!
 -- bash scriptname.sh  - can take up to ten minutes to complete, watch top
 
 -- run the converted copy before the original copy, so that the converted "wins" in any conflict
