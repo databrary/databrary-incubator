@@ -23,7 +23,9 @@ where sa.container = <SLOT ID>;
 -- first line: set -x (to echo command, as they take time to run)
 -- next line: mkdir -p [path] at top of script ... DO NOT FORGET /NYU/STAGE!!!!!!
 -- bash scriptname.sh  - can take up to ten minutes to complete, watch top
+-- add , a.format after || name to see extensions
 
 -- run the converted copy before the original copy, so that the converted "wins" in any conflict
+-- add , oa.format after || oa.name to see extensions
 
 -- generate manifest of copied files by using same query with only target ouptut (or ls -1 in the output dir)
