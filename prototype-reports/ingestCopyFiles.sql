@@ -29,3 +29,7 @@ where sa.container = <SLOT ID>;
 -- add , oa.format after || oa.name to see extensions
 
 -- generate manifest of copied files by using same query with only target ouptut (or ls -1 in the output dir)
+
+
+-- TODOs:
+--  make output generated name include the extension
