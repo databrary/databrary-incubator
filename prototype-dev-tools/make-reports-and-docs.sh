@@ -56,6 +56,8 @@ report () {
     ( # New subshell for nested traps
         cd ${wd}
         trap "cd -" EXIT
+        # Get frontend docs, too
+        git submodule update --remote
         git commit --no-gpg-sign --no-verify --all -m "Update ${TODAY}"
         git push
     )
