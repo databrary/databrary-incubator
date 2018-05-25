@@ -1,3 +1,4 @@
+-- used for periodic report of unique users downloading a given volume
 select 
     id
   , count(distinct 
