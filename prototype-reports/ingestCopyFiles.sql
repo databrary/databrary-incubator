@@ -2,6 +2,7 @@
 select 
   'cp /nyu/store/' || substr(cast(sha1 as varchar(80)), 3, 2) || '/' || right(cast(sha1 as varchar(80)), -4) 
   || ' /nyu/stage/ebergelson/' || volume || '/' || container || '/' || name 
+     || '.' || (select extension[1] from format where id = a.format) 
 from slot_asset sa 
   inner join asset a on sa.asset = a.id 
 where container = <SLOT ID>;
@@ -9,7 +10,8 @@ where container = <SLOT ID>;
 -- original
 select 
   'cp /nyu/store/' || substr(cast(oa.sha1 as varchar(80)), 3, 2) || '/' || right(cast(oa.sha1 as varchar(80)), -4) 
-  || ' /nyu/stage/ebergelson/' || a.volume || '/' || sa.container || '/' || oa.name 
+  || ' /nyu/stage/ebergelson/' || a.volume || '/' || sa.container || '/ORIG-' || oa.name
+     || '.' || (select extension[1] from format where id = oa.format)
 from slot_asset sa 
   inner join asset a on sa.asset = a.id  
   inner join transcode t on t.asset = a.id
