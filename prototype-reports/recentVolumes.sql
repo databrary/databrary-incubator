@@ -1,8 +1,8 @@
 select av.id
-       -- , p.prename, p.name (only show for admin)
+       , p.prename, p.name (only show for admin)
        , doi
        , to_char(audit_time, 'Dy Mon DD') as audit_time
-       -- , audit_user as usr (only show for admin) 
+       , audit_user as usr (only show for admin) 
        , (select case va.share_full when true then 'PUBLIC'
                                     when false then 'PARTIAL' end
           from volume_access va
