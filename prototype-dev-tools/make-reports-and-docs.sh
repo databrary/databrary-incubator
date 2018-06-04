@@ -44,7 +44,10 @@ report () {
     wd=$(mktemp -d)
     git worktree add ${wd} gh-pages
     trap "rm -rf ${wd}; git worktree prune" RETURN
-    trap "#### WORKTREE PRESERVED AT ${wd}" ERR
+    trap "echo #### WORKTREE PRESERVED AT ${wd}" ERR
+
+    ## Update gh-pages from remote
+    (cd $wd; git pull)
 
     ## Rsync the haddocks and the hpc report
     rsync -ric --delete \
