@@ -9,5 +9,6 @@ rm -rf $BASEDIR/databrary-$ENVIR-*
 mkdir -p $BASEDIR 
 git clone --branch $BRANCH --depth 1 https://github.com/databrary/databrary $clone_dir
 cd $clone_dir
+git log -1
 # trigger config file creation
 TMPDIR=/tmp ./build-package-copy-prep-stage $COPYUSR
