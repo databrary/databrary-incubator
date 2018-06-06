@@ -26,6 +26,7 @@ where sa.container = <SLOT ID>;
 
 
 -- Kanishka: log into two iTerm2 windows, and connect to database
+-- df -h to check for available space in /nyu
 -- Joy: edit code above to replace <SLOT ID> with slot number (remove <> and no need for volume)
 -- Copy code to iTerm window, paste, then copy generated lines
 -- In second iTerm2 window, open nano in /tmp
