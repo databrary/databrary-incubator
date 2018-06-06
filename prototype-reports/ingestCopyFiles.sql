@@ -34,11 +34,10 @@ where sa.container = <SLOT ID>;
 -- next line: mkdir -p [path] at top of script ... DO NOT FORGET /NYU/STAGE!!!!!!
 -- paste lines and save as file name = slotID.sh (copy into shell script) 
 -- bash scriptname.sh  - can take up to ten minutes to complete, watch top
+-- ls -1 [path] to list out all copied files
 
 -- Run only converted or original at any given time, not both. okay to run the other at a later time.
 -- If you run original after converted, all the files that don't go through conversion will show errors on copy attempt.
-
--- generate manifest of copied files by using same query with only target ouptut (or ls -1 in the output dir)
 
 -- TODOs:
 --  - identify any converted with extension repeated in asset name
