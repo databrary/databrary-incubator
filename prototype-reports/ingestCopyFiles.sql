@@ -1,4 +1,4 @@
--- converted and unconverted
+-- converted and conversion not needed
 ---- this will retrieve all converted assets combined with all assets that didn't need any conversion
 select 
   'cp /nyu/store/' || substr(cast(sha1 as varchar(80)), 3, 2) 
