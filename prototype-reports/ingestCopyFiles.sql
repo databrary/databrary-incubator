@@ -26,10 +26,12 @@ where sa.container = <SLOT ID>;
 
 
 -- Kanishka: log into two iTerm2 windows, and connect to database
--- Joy: paste in "converted" portion above, copy generated lines
--- Joy: in second iTerm2 window, open nano in /tmp, paste lines and save as file name = slotID.sh (copy into shell script) 
+-- Joy: edit code above to replace <SLOT ID> with slot number (remove <> and no need for volume)
+-- Copy code to iTerm window, paste, then copy generated lines
+-- In second iTerm2 window, open nano in /tmp
 -- first line: set -x (to echo command, as they take time to run)
 -- next line: mkdir -p [path] at top of script ... DO NOT FORGET /NYU/STAGE!!!!!!
+-- paste lines and save as file name = slotID.sh (copy into shell script) 
 -- bash scriptname.sh  - can take up to ten minutes to complete, watch top
 
 -- Run only converted or original at any given time, not both. okay to run the other at a later time.
