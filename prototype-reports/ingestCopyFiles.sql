@@ -25,9 +25,9 @@ from slot_asset sa
 where sa.container = <SLOT ID>;
 
 
--- Kanishka: log into two iTerm2 windows
+-- Kanishka: log into two iTerm2 windows, and connect to database
 -- Joy: paste in "converted" portion above, copy generated lines
--- Joy: in second iTerm2 window, open nano, paste lines with file name = slotID.sh (copy into shell script) 
+-- Joy: in second iTerm2 window, open nano, paste lines and save as file name = slotID.sh (copy into shell script) 
 -- first line: set -x (to echo command, as they take time to run)
 -- next line: mkdir -p [path] at top of script ... DO NOT FORGET /NYU/STAGE!!!!!!
 -- bash scriptname.sh  - can take up to ten minutes to complete, watch top
