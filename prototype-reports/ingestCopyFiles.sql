@@ -3,7 +3,7 @@
 select 
   'cp /nyu/store/' || substr(cast(sha1 as varchar(80)), 3, 2) 
      || '/' || right(cast(sha1 as varchar(80)), -4) 
-  || ' /nyu/stage/ebergelson/' || volume || '/' || container || '/' 
+  || ' /nyu/stage/ebergelson/' || volume || '/' || container || '/' || <TGT VOLUME ID>
      || a.name || '.' || f.extension[1] 
 from slot_asset sa 
   inner join asset a on sa.asset = a.id 
@@ -15,7 +15,7 @@ where container = <SLOT ID>;
 select 
   'cp /nyu/store/' || substr(cast(coalesce(oa.sha1, a.sha1) as varchar(80)), 3, 2) 
      || '/' || right(cast(coalesce(oa.sha1, a.sha1) as varchar(80)), -4) 
-  || ' /nyu/stage/ebergelson/' || a.volume || '/' || sa.container || '/' 
+  || ' /nyu/stage/ebergelson/' || a.volume || '/' || sa.container || '/' || <TGT VOLUME ID>
      || coalesce(oa.name, a.name || '.' || f.extension[1])
 from slot_asset sa 
   inner join asset a on sa.asset = a.id  
@@ -31,7 +31,7 @@ where sa.container = <SLOT ID>;
 -- Copy code to iTerm window, paste, then copy generated lines
 -- In second iTerm2 window, open nano in /tmp
 -- first line: set -x (to echo command, as they take time to run)
--- next line: mkdir -p [path] at top of script ... DO NOT FORGET /NYU/STAGE!!!!!!
+-- next line: mkdir -p [path] at top of script ... DO NOT FORGET /nyu/stage !!!!!!
 -- paste lines and save as file name = slotID.sh (copy into shell script) 
 -- bash scriptname.sh  - can take up to ten minutes to complete, watch top
 -- ls -1 [path] to list out all copied files
@@ -41,4 +41,4 @@ where sa.container = <SLOT ID>;
 
 -- TODOs:
 --  - identify any converted with extension repeated in asset name
---  - ...
+--  - change to user id instead of initalized name for target folder
