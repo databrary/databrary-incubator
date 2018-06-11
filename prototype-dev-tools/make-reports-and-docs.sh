@@ -4,14 +4,14 @@
 # Use
 # https://discourse.nixos.org/t/best-way-to-augment-a-nix-shell-for-dev-utilities/157/6
 # once we finally update nixpkgs again.
-set -eu
+set -Eeuo pipefail
 
 # TODO: Include commit date as well as report creation date.
 # TODO: Clean up hpc summary
 TODAY=$(date +%Y-%m-%d)
 
 DISTDIR=dist-reports
-CABAL="cabal --builddir=$PWD/$DISTDIR"
+cabal="cabal --builddir=$PWD/$DISTDIR"
 
 haddock_report_file=haddock-coverage-report-${TODAY}.txt
 
@@ -25,17 +25,17 @@ make_haddock_summary () {
 
 build () {
     ## Basic (?) cabal steps
-    $CABAL configure \
+    $cabal configure \
         --enable-tests \
         --enable-coverage \
         --disable-shared \
         --disable-optimization
-    $CABAL build -j
+    $cabal build -j
     # This also calls hpc
-    $CABAL test
+    $cabal test
 
     ## Use cabal to call haddock
-    $CABAL haddock --hyperlink-source | grep ') in' \
+    $cabal haddock --hyperlink-source | grep ') in' \
         | tee $haddock_report_file
 }
 
@@ -56,9 +56,8 @@ report () {
     rsync -ric --delete $DISTDIR/doc/html/databrary/ ${wd}/haddocks/
 
     ## Update and finish
-    ( # New subshell for nested traps
+    ( # New subshell for new directory
         cd ${wd}
-        trap "cd -" EXIT
         git add -A
         # Get frontend docs, too
         git submodule update --remote
