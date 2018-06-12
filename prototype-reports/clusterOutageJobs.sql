@@ -12,3 +12,8 @@ select asset, owner, start, process, substring(log from 0 for 20)
 from transcode 
 where log like '%Prince%' and start > '2018-06-10'  
 order by start desc;
+
+--- change # to start a job (doesn't this need a cookie header??)
+curl 'https://nyu.databrary.org/admin/transcode/132779' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  --data 'action=start'
