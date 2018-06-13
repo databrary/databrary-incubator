@@ -23,6 +23,10 @@ make_haddock_summary () {
         END { printf "%.2f%% %d %d\n",  ($n / $d) * 100,  $n, $d; }' $@
 }
 
+clean () {
+    rm -rf $DISTDIR/hpc/vanilla/html/databrary-1/
+}
+
 build () {
     ## Basic (?) cabal steps
     $cabal configure \
@@ -81,6 +85,7 @@ summary () {
         | grep -o -P '^.{40}'
 }
 
+clean
 build
 report
 summary
