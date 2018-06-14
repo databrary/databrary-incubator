@@ -1,3 +1,4 @@
+-- join with audit.party and present audit_time of 'add'
 select id, prename, name, site 
 from party p 
 inner join authorize_view v on (v.parent, v.child) = (0,p.id) 
