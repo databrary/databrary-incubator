@@ -46,6 +46,7 @@ build () {
 report () {
     ## Set up gh-pages for rsyncing
     wd=$(mktemp -d)
+    git worktree prune
     git worktree add ${wd} gh-pages
     trap "rm -rf ${wd}; git worktree prune" RETURN
     trap "echo #### WORKTREE PRESERVED AT ${wd}" ERR
