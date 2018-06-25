@@ -1,28 +1,27 @@
 #!/usr/bin/env bats
 
-# FIXME: Work in progress (does nothing yet).
+# FIXME: Work in progress.
 #
 # The intent of this script is to create a series of curl tests that run against
-# the local dev site. The first example hits /user/login and looks for some text
-# that is unique to that route. At least, I hope that's what this text is.
+# the local dev site. The first example checks for the Date header that gets
+# sent with every request. That might sound silly, but currently it's Databrary
+# source code that sends that header, so we have to check for it (even though
+# we're moving to let library code handle this).
 #
 # I began this script while working to convert routes to be served by Servant.
 #
 # This script uses the bats framework: https://github.com/bats-core/bats-core
 
-declare -A tests
-tests=(
-    # FIXME: This is *not* specific to this route. It's part of the generic
-    # payload for the Angular app.
-    ['user/login']='window.$play={user:{"id":-1,"sortname":"Nobody","institution":true,"authorization":0}};'
-)
+url=http://localhost:8000
 
-for route in "${!tests[@]}"; do
-    url="localhost:8000/${route}"
-    # Note: Trying to use associated array indexing within the test triggers a
-    # bats bug. Outside is fine, however.
-    string="${tests[$route]}"
-    @test "$route" {
-        curl -s "$url" | grep -qF "$string"
-    }
-done
+@test "date header" {
+    # Hopefully date and curl run in the same minute. :)
+    pattern=$(date -u +"^Date: %a, %d %b %Y %R:.. GMT")
+    curl -sI ${url}/user/login | grep "$pattern"
+}
+@test "cache header" {
+    route=
+    pattern="^Cache-Control: no-cache"
+    ! curl -sI $url | grep -q "$pattern"
+    curl -sI -H "X-Requested-With: DatabraryClient" $url | grep -q "$pattern"
+}
