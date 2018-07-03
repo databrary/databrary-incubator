@@ -1,7 +1,6 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i bash
-# FIXME: Add rsync to the env somehow
-# Use
+# FIXME: Add rsync and pup to the env. Use
 # https://discourse.nixos.org/t/best-way-to-augment-a-nix-shell-for-dev-utilities/157/6
 # once we finally update nixpkgs again.
 set -Eeuo pipefail
@@ -14,6 +13,7 @@ DISTDIR=dist-reports
 cabal="cabal --builddir=$PWD/$DISTDIR"
 
 haddock_report_file=haddock-coverage-report-${TODAY}.txt
+hlint_report_file=hlint-${TODAY}.html
 
 make_haddock_summary () {
     perl -ne '
@@ -41,6 +41,9 @@ build () {
     ## Use cabal to call haddock
     $cabal haddock --hyperlink-source | grep ') in' \
         | tee $haddock_report_file
+
+    # Generate the hlint report
+    hlint -j --report=$hlint_report_file --no-exit-code src >/dev/null
 }
 
 report () {
@@ -53,6 +56,9 @@ report () {
 
     ## Update gh-pages from remote
     (cd $wd; git pull)
+
+    ## Update the hlint report
+    cp $hlint_report_file ${wd}/hlint.html
 
     ## Rsync the haddocks and the hpc report
     rsync -ric --delete \
@@ -84,6 +90,8 @@ summary () {
     tail -2 $DISTDIR/hpc/vanilla/html/databrary-1/hpc_index.html \
         | head -1 \
         | grep -o -P '^.{40}'
+    echo -n 'Hlint hints: '
+    pup 'div#content > div' -n < $hlint_report_file
 }
 
 clean
