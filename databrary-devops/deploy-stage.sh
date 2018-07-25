@@ -2,7 +2,6 @@
 set -e
 ENVIR="stage"
 BRANCH=$1
-COPYUSR=`whoami`
 BASEDIR=~/src
 clone_dir="$BASEDIR/databrary-$ENVIR-$BRANCH"  # TODO: lowercase branch name to workaround gargoyle/network bug
 rm -rf $BASEDIR/databrary-$ENVIR-*
@@ -11,4 +10,4 @@ git clone --branch $BRANCH --depth 1 https://github.com/databrary/databrary $clo
 cd $clone_dir
 git log -1
 # trigger config file creation
-TMPDIR=/tmp ./build-package-copy-prep-stage $COPYUSR
+TMPDIR=/tmp ./build-package-copy-prep-stage
