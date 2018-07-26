@@ -8,7 +8,7 @@ cd /home/databrary
 
 # clear out migrations script, prepare for next run
 mv runNewDbMigrations.sh runNewDbMigrations.sh.last
-echo 'cd $(dirname $(readlink /home/databrary/databraryExeLink))/../share/x86_64-linux-ghc-8.0.2/databrary-1/schema/' > /home/databrary/runNewDbMigrations.shchmod +x /home/demo/runNewDbMigrations.sh
+echo 'cd $(dirname $(readlink /home/databrary/databraryExeLink))/../share/x86_64-linux-ghc-8.0.2/databrary-1/schema/' > /home/databrary/runNewDbMigrations.sh
 chmod +x /home/databrary/runNewDbMigrations.sh
 
 # print out timestamp of latest build
