@@ -12,4 +12,4 @@ psql -d demo -h localhost -f reset.sql
 pg_restore -d demo -h localhost -O $dump
 rm -rf /nyu/demo/store/* /nyu/demo/upload/*
 rm -f hpc/databrary/demo/*
-ssh hpc rm -f databrary/demo/\*
+ssh hpc rm -f databrary/demo/\*  ## TODO: should this use hpcprince?
