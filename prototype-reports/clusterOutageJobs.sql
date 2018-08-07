@@ -1,3 +1,4 @@
+# TODO: turn this login sequence into one line
 ssh <NETID>@<BASTION>
 ssh -t <PROD> "sudo -i su - <APP_USER>"
 psql -h localhost
