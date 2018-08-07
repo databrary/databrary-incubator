@@ -1,4 +1,4 @@
--- when process is null and (asset is missing size or something?) and log message is "prince is down", 
+-- when process is null and (asset is missing size or something?) and log message is "prince is down", "Authentication failed."
 --  then those are the failures
 
 select orig, asset, owner, segment, start, process, substring(log from 0 for 50) 
