@@ -27,7 +27,8 @@ curl 'https://nyu.databrary.org/api/user/login' \
   --cookie-jar /tmp/cookies.txt
 
 --- change # to start a job. TRANSCODE ASSET ID is the "asset" column in queries above
--- this takes about 48 seconds to complete
+-- this takes about 48 seconds to complete per call. 
+-- start all of the failed jobs.
 curl 'https://nyu.databrary.org/admin/transcode/<TRANSCODE ASSET ID>' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   --data 'action=start' \
@@ -43,3 +44,6 @@ select asset, owner, start, process, substring(log from 0 for 20)
 from transcode 
 where log like '%Authentication failed%' and start > '2018-08-05' and process is not null
 order by start desc;
+
+-- each job takes about one hour to complete, sometimes up to three hours. 
+-- the jobs run in parallel.
