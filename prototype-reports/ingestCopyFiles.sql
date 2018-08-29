@@ -1,3 +1,5 @@
+-- ******** PURPOSE: Hack to get files temporarily uploaded into a volume into a desired folder under staging directory ****
+
 -- converted and conversion not needed
 ---- this will retrieve all converted assets combined with all assets that didn't need any conversion
 select 
